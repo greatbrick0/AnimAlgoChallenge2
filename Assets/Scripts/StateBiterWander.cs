@@ -18,7 +18,7 @@ public class StateBiterWander : BehaviourState
 
     public override void Enter()
     {
-        gameObject.GetComponent<AWSPatrol>().enabled = false;
+        originPos = transform.position;
         gameObject.GetComponent<Animator>().SetTrigger("Idle");
         agent = gameObject.GetComponent<NavMeshAgent>();
         StartCoroutine(WanderRandomly());

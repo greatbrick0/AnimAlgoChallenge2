@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Overtime.FSM;
+using Worq;
 
 public class Biter : MonoBehaviour
 {
@@ -11,9 +12,18 @@ public class Biter : MonoBehaviour
 		get { return m_FSM; }
 	}
 
+	public WaypointRoute routePoints;
+
+	public int currentPatrolPoint = 0;
+
 	public TEnumState m_InitialState;
 
 	public ScriptableObject[] m_States;
+
+	public Vector3 GetNextRoutePoint()
+    {
+		return routePoints.GetChildPoint(currentPatrolPoint);
+    }
 
 	void OnDestroy()
 	{

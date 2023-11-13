@@ -6,6 +6,7 @@ using Worq;
 [CreateAssetMenu(menuName = "States/Attack")]
 public class StateBiterAttack : BehaviourState
 {
+    private float age = 0.0f;
     public override void BuildTransitions()
     {
         AddTransition(TEnumTransition.START_TRAVEL, TEnumState.TRAVEL);
@@ -14,7 +15,13 @@ public class StateBiterAttack : BehaviourState
 
     public override void Enter()
     {
-        gameObject.GetComponent<AWSPatrol>().enabled = false;
-        gameObject.GetComponent<Animator>().SetTrigger("Attack");
+        gameObject.GetComponent<Animator>().SetTrigger("Basic Attack");
+        age = 0;
+    }
+
+    public override void Update()
+    {
+        age += Time.deltaTime;
+        if (age >= 5) Destroy(gameObject);
     }
 }

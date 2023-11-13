@@ -67,9 +67,9 @@ namespace Worq
 
         //private variables
         private AWSManager mAWSManager;
-        private NavMeshAgent agent;
         private Animation anim;
         private AudioSource src;
+        [SerializeField]
         private Transform[] patrolPoints;
         private bool isWaiting;
         private bool hasPlayedDetectSound;
@@ -77,11 +77,15 @@ namespace Worq
         private int waypointCount;
         private int destPoint;
 
+        public Vector3 GetPatrolPoint(int index)
+        {
+            return patrolPoints[index].position;
+        }
+
         void Awake()
         {
             mAWSManager = GameObject.FindObjectOfType<AWSManager>();
 
-            agent = GetComponent<NavMeshAgent>();
             anim = GetComponent<Animation>();
             src = GetComponent<AudioSource>();
 
@@ -126,12 +130,6 @@ namespace Worq
             if (anim == null)
                 anim = gameObject.AddComponent<Animation>();
 
-            agent.autoBraking = false;
-            agent.stoppingDistance = stoppingDistance;
-            agent.speed = moveSpeed;
-            agent.angularSpeed = angularSpeed;
-            agent.baseOffset = distanceFromGround;
-
             string newName;
             if (idleAnimations != null && idleAnimations.Length > 0)
             {
@@ -166,7 +164,6 @@ namespace Worq
         {
             if (resetPatrol || reset)
             {
-                agent.isStopped = false;
                 goToNextPointDirect();
                 interruptPatrol = false;
                 resetPatrol = false;
@@ -175,14 +172,8 @@ namespace Worq
 
             if (interruptPatrol)
             {
-                agent.isStopped = true;
                 if (null != idleAnimations)
                     playAnimation(idleAnimations);
-            }
-
-            if (!interruptPatrol && !isWaiting && agent.remainingDistance <= stoppingDistance && null != group)
-            {
-                GotoNextPoint();
             }
 //For future a release
 //			if (goTo != null && !hasReachedGoTo)
@@ -200,11 +191,6 @@ namespace Worq
 //			}
 
             //updating variables
-
-            agent.stoppingDistance = stoppingDistance;
-            agent.speed = this.moveSpeed;
-            agent.angularSpeed = angularSpeed;
-            agent.baseOffset = distanceFromGround;
         }
 
         private void GotoNextPoint()
@@ -229,7 +215,6 @@ namespace Worq
 
             if (randomPatroler)
             {
-                agent.destination = patrolPoints[destPoint].position;
                 int nextPos;
                 do
                 {
@@ -240,7 +225,6 @@ namespace Worq
             }
             else
             {
-                agent.destination = patrolPoints[destPoint].position;
                 destPoint = (destPoint + 1) % patrolPoints.Length;
             }
 
@@ -249,11 +233,10 @@ namespace Worq
             isWaiting = false;
         }
 
-        void goToNextPointDirect()
+        public void goToNextPointDirect()
         {
             if (randomPatroler)
             {
-                agent.destination = patrolPoints[destPoint].position;
                 int nextPos;
                 do
                 {
@@ -264,7 +247,6 @@ namespace Worq
             }
             else
             {
-                agent.destination = patrolPoints[destPoint].position;
                 destPoint = (destPoint + 1) % patrolPoints.Length;
             }
 
@@ -276,9 +258,7 @@ namespace Worq
         {
             hasPlayedDetectSound = false;
             resetPatrol = false;
-            agent.speed = moveSpeed;
 
-            agent.stoppingDistance = 1f;
             if (walkAnimations != null)
                 playAnimation(walkAnimations);
             goToNextPointDirect();
@@ -314,7 +294,6 @@ namespace Worq
 
         public void SetDeatination(Transform t)
         {
-            agent.destination = t.position;
             if (walkAnimations != null)
                 playAnimation(walkAnimations);
             isWaiting = false;

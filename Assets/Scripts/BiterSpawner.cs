@@ -10,9 +10,12 @@ public class BiterSpawner : BiterCollection
     [SerializeField]
     WaypointRoute route;
 
+    [SerializeField]
+    float spawnTime = 5.0f;
+
     void Start()
     {
-        InvokeRepeating(nameof(SpawnBiter), 1, 5);
+        InvokeRepeating(nameof(SpawnBiter), 0.1f, spawnTime);
     }
 
     private void SpawnBiter()
@@ -20,5 +23,6 @@ public class BiterSpawner : BiterCollection
         collectedBiters.Add(Instantiate(biterObj, transform.parent.parent).GetComponent<Biter>());
         collectedBiters[^1].transform.position = transform.position;
         collectedBiters[^1].GetComponent<AWSPatrol>().group = route;
+        collectedBiters[^1].routePoints = route;
     }
 }

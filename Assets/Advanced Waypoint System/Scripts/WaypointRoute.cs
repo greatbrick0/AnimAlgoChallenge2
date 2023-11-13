@@ -13,6 +13,11 @@ namespace Worq
 		private int uniqueID;
 		private AWSManager manager;
 		
+		public Vector3 GetChildPoint(int childIndex)
+        {
+			return transform.GetChild(childIndex).position;
+        }
+
 		public void CreateRoute ()
 		{
 			manager = GameObject.FindObjectOfType<AWSManager> ();

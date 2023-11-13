@@ -17,16 +17,22 @@ public class StateBiterTravel : BehaviourState
 
     public override void Enter()
     {
-        gameObject.GetComponent<AWSPatrol>().enabled = false;
         gameObject.GetComponent<Animator>().SetTrigger("Walk");
         agent = gameObject.GetComponent<NavMeshAgent>();
+        gameObject.GetComponent<Biter>().currentPatrolPoint += 1;
+        agent.SetDestination(gameObject.GetComponent<Biter>().GetNextRoutePoint());
     }
 
     public override void Update()
     {
         if(Vector3.Distance(agent.pathEndPosition, transform.position) < 1)
         {
-            MakeTransition(TEnumTransition.START_WANDER);
+            if (gameObject.GetComponent<Biter>().currentPatrolPoint == 2 && Vector3.Distance(transform.position, new Vector3(-15, 1, 15)) < 3)
+            {
+                MakeTransition(TEnumTransition.START_ATTACK);
+            }
+            else MakeTransition(TEnumTransition.START_WANDER);
+
         }
     }
 
